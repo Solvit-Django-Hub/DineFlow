@@ -104,8 +104,8 @@ DINEFLOW
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/dineflow.git
-cd dineflow
+git clone https://github.com/Solvit-Django-Hub/DineFlow.git
+cd DineFlow
 ```
 
 Create and activate a virtual environment:
