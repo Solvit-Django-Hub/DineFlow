@@ -1,10 +1,10 @@
-# DINEFLOW
+# DineFlow
 
 > A restaurant management system for managing menus, tables, customers, reservations, orders, staff, and payments.
 
 ## Overview
 
-DINEFLOW brings restaurant operations into one system. It allows customers to make reservations and place orders while staff and administrators manage restaurant activities from a central platform.
+DineFlow brings restaurant operations into one system. It allows customers to make reservations and place orders while staff and administrators manage restaurant activities from a central platform.
 
 ## Main Features
 
@@ -72,7 +72,7 @@ Staff / Admin
 ## System Structure
 
 ```text
-DINEFLOW
+DineFlow
 │
 ├── Accounts
 ├── Restaurant
@@ -104,8 +104,8 @@ DINEFLOW
 Clone the repository:
 
 ```bash
-git clone https://github.com/your-username/dineflow.git
-cd dineflow
+git clone https://github.com/your-username/DineFlow.git
+cd DineFlow
 ```
 
 Create and activate a virtual environment:
@@ -146,7 +146,7 @@ http://127.0.0.1:8000/
 
 ## API
 
-The REST API provides access to the main DINEFLOW resources, including users, menus, tables, reservations, orders, and payments.
+The REST API provides access to the main DineFlow resources, including users, menus, tables, reservations, orders, and payments.
 
 API documentation is available through Swagger/OpenAPI.
 
