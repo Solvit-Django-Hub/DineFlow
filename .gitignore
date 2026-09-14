@@ -1,28 +1,98 @@
-# Python
+# Python bytecode & cache
 __pycache__/
 *.py[cod]
 *$py.class
-*.env
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
 .venv/
-env/
 venv/
 ENV/
+env/
+env.bak/
+venv.bak/
+bin/
+include/
+Lib/
+Scripts/
 
-# Django
+# Django files
 *.log
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
 staticfiles/
+collected_static/
 
-# IDEs
+
+*/migrations/*.py
+!*/migrations/__init__.py
+
+# Postman exports and environments
+*.postman_collection.json
+*.postman_environment.json
+*.postman_globals.json
+postman/
+.postman/
+
+# Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+
+# IDEs & Editors
 .vscode/
 .idea/
 *.swp
 *.swo
+*~
+*.sublime-workspace
+*.sublime-project
 
-# OS
+# Testing & Coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+htmlcov/
+
+# Operating System Files
 Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
 Desktop.ini
+[Dd]esktop.ini
+$RECYCLE.BIN/
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
