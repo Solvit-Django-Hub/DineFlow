@@ -3,17 +3,26 @@ from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
 from accounts.models import User
 from accounts.permissions import IsStaffRole
-from .models import Category, MenuItem, Reservation, Table
+from .models import (
+    Category,
+    MenuItem,
+    Order,
+    Payment,
+    Reservation,
+    Table,
+)
 from .serializers import (
     CategorySerializer,
     MenuItemSerializer,
+    OrderSerializer,
+    PaymentSerializer,
     ReservationSerializer,
     TableSerializer,
 )
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
-    
+
 
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -25,7 +34,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
 
 
 class MenuItemViewSet(viewsets.ModelViewSet):
-    
+
 
     queryset = MenuItem.objects.select_related("category").all()
     serializer_class = MenuItemSerializer
@@ -37,7 +46,7 @@ class MenuItemViewSet(viewsets.ModelViewSet):
 
 
 class TableViewSet(viewsets.ModelViewSet):
-  
+ 
 
     queryset = Table.objects.all()
     serializer_class = TableSerializer
@@ -49,7 +58,7 @@ class TableViewSet(viewsets.ModelViewSet):
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
-   
+
 
     serializer_class = ReservationSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -72,4 +81,43 @@ class ReservationViewSet(viewsets.ModelViewSet):
         return Response(
             {"detail": "Reservation has been cancelled."},
             status=status.HTTP_200_OK,
+        )
+
+
+class OrderViewSet(viewsets.ModelViewSet):
+
+
+    serializer_class = OrderSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role in [User.Role.STAFF, User.Role.ADMIN] or user.is_superuser:
+            return (
+                Order.objects.select_related("customer", "table")
+                .prefetch_related("items__menu_item")
+                .all()
+            )
+        return (
+            Order.objects.select_related("customer", "table")
+            .prefetch_related("items__menu_item")
+            .filter(customer=user)
+        )
+
+    def perform_create(self, serializer):
+        serializer.save(customer=self.request.user)
+
+
+class PaymentViewSet(viewsets.ModelViewSet):
+
+
+    serializer_class = PaymentSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        if user.role in [User.Role.STAFF, User.Role.ADMIN] or user.is_superuser:
+            return Payment.objects.select_related("order").all()
+        return Payment.objects.select_related("order").filter(
+            order__customer=user
         )
