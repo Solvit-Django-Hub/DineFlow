@@ -1,123 +1,108 @@
-# DineFlow
+# DINEFLOW
 
-> A restaurant management system for managing menus, tables, customers, reservations, orders, staff, and payments.
+### Restaurant Management System API
 
-## Overview
+DINEFLOW is a backend REST API built with **Django** and **Django REST Framework** for managing restaurant operations.
 
-DineFlow brings restaurant operations into one system. It allows customers to make reservations and place orders while staff and administrators manage restaurant activities from a central platform.
+It allows restaurants to manage users, menus, tables, reservations, orders, kitchen operations, and payments through a secure and organized API.
 
-## Main Features
+---
 
-* User registration and login
-* JWT authentication
-* User profiles
-* Menu and menu item management
-* Table management
-* Customer management
-* Staff and waiter management
-* Reservations
-* Orders and order items
-* Payments
-* Role-based permissions
-* Search, filtering, and ordering
-* Pagination
-* REST API
-* API documentation
-* Automated testing
+## Features
 
-## User Flow
+* User registration and JWT authentication
+* Role-based access for Admin, Staff, and Customers
+* Restaurant menu and category management
+* Dining table management
+* Table reservations
+* Order management
+* Kitchen order status tracking
+* Payment management
+* Search, filtering, ordering, and pagination
+* API documentation with Swagger
+
+---
+
+## Main User Flow
 
 ```text
-Customer
-   │
-   ▼
 Register / Login
-   │
-   ▼
-View Menu
-   │
-   ▼
-Make Reservation
-   │
-   ▼
-Place Order
-   │
-   ▼
-Review Order
-   │
-   ▼
-Payment
-   │
-   ▼
-Confirmation
+       ↓
+Browse Menu
+       ↓
+Reserve a Table
+       ↓
+Place an Order
+       ↓
+Kitchen Prepares Order
+       ↓
+Order Served
+       ↓
+Make Payment
+       ↓
+Order Completed
 ```
 
-```text
-Staff / Admin
-      │
-      ▼
-    Login
-      │
-      ▼
-   Dashboard
-      │
-      ├── Manage Menu
-      ├── Manage Tables
-      ├── Manage Customers
-      ├── Manage Reservations
-      ├── Manage Orders
-      └── Manage Payments
-```
+---
 
-## System Structure
+## User Roles
 
-```text
-DineFlow
-│
-├── Accounts
-├── Restaurant
-│   ├── Menus
-│   ├── Menu Items
-│   ├── Tables
-│   └── Staff
-│
-├── Customers
-├── Reservations
-├── Orders
-│   └── Order Items
-├── Payments
-├── API
-└── Tests
-```
+| Role     | Description                                                      |
+| -------- | ---------------------------------------------------------------- |
+| Customer | Browse the menu, reserve tables, place orders, and make payments |
+| Staff    | Manage menus, tables, reservations, and orders                   |
+| Admin    | Manage users and restaurant operations                           |
 
-## Technology
+---
+
+## Technologies
 
 * Python
 * Django
 * Django REST Framework
-* SQLite / PostgreSQL
-* JWT Authentication
-* Swagger / OpenAPI
+* Simple JWT
+* PostgreSQL / SQLite
+* django-filter
+* drf-spectacular
+* WhiteNoise
+
+---
+
+## Project Structure
+
+```text
+DINEFLOW/
+│
+├── accounts/
+├── restaurant/
+├── config/
+├── manage.py
+├── requirements.txt
+├── .env
+└── README.md
+```
+
+---
 
 ## Installation
 
-Clone the repository:
+Clone the project:
 
 ```bash
 git clone https://github.com/Solvit-Django-Hub/DineFlow.git
 cd DineFlow
 ```
 
-Create and activate a virtual environment:
+Create a virtual environment:
 
 ```bash
 python -m venv .venv
 ```
 
-Windows PowerShell:
+Activate it on Windows:
 
 ```powershell
-.venv\Scripts\Activate.ps1
+.\.venv\Scripts\Activate.ps1
 ```
 
 Install dependencies:
@@ -126,30 +111,95 @@ Install dependencies:
 pip install -r requirements.txt
 ```
 
-Run database migrations:
+Create a `.env` file and configure your environment variables:
+
+```env
+DEBUG=True
+SECRET_KEY=your-secret-key
+ALLOWED_HOSTS=127.0.0.1,localhost
+CORS_ALLOW_ALL=True
+```
+
+Run migrations:
 
 ```bash
 python manage.py migrate
 ```
 
-Start the development server:
+Create an admin user:
+
+```bash
+python manage.py createsuperuser
+```
+
+Start the server:
 
 ```bash
 python manage.py runserver
 ```
 
-Open:
+---
+
+## API Documentation
+
+After starting the server, open Swagger:
 
 ```text
-http://127.0.0.1:8000/
+http://127.0.0.1:8000/api/docs/
 ```
 
-## API
+Swagger provides an interactive interface for viewing and testing the API endpoints.
 
-The REST API provides access to the main DineFlow resources, including users, menus, tables, reservations, orders, and payments.
+---
 
-API documentation is available through Swagger/OpenAPI.
+## Testing
 
-## License
+Run the tests with:
 
-This project is developed for learning and portfolio purposes.
+```bash
+python manage.py test
+```
+
+---
+
+## Deployment
+
+DINEFLOW can be deployed using **Vercel**.
+
+Install the Vercel CLI:
+
+```bash
+npm install -g vercel
+```
+
+Login:
+
+```bash
+vercel login
+```
+
+Deploy:
+
+```bash
+vercel
+```
+
+For production:
+
+```bash
+vercel --prod
+```
+
+---
+
+## Purpose
+
+DINEFLOW was created as a practical Django REST Framework project to demonstrate:
+
+* Backend development with Django
+* REST API development
+* Authentication and permissions
+* Database relationships
+* Business logic and validation
+* API documentation
+* Testing and deployment
