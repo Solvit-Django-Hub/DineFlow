@@ -1,4 +1,3 @@
-
 from datetime import date
 from decimal import Decimal
 from django.db import transaction
@@ -15,7 +14,6 @@ from .models import (
 
 
 class MenuItemSerializer(serializers.ModelSerializer):
-
 
     category_name = serializers.ReadOnlyField(source="category.name")
 
@@ -34,7 +32,6 @@ class MenuItemSerializer(serializers.ModelSerializer):
         )
 
     def validate_price(self, value):
-
         if value <= 0:
             raise serializers.ValidationError("Price must be greater than zero.")
         return value
@@ -91,13 +88,13 @@ class ReservationSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "customer", "created_at", "updated_at")
 
     def validate_reservation_date(self, value):
-        
+
         if value < date.today():
             raise serializers.ValidationError("Reservation date cannot be in the past.")
         return value
 
     def validate(self, attrs):
-       
+
         table = attrs.get("table")
         party_size = attrs.get("party_size")
         reservation_date = attrs.get("reservation_date")
@@ -139,7 +136,7 @@ class ReservationSerializer(serializers.ModelSerializer):
 
 
 class OrderItemInputSerializer(serializers.Serializer):
-  
+   
 
     menu_item = serializers.PrimaryKeyRelatedField(
         queryset=MenuItem.objects.all()
@@ -148,8 +145,7 @@ class OrderItemInputSerializer(serializers.Serializer):
 
 
 class OrderItemSerializer(serializers.ModelSerializer):
-
-
+  
     menu_item_name = serializers.ReadOnlyField(source="menu_item.name")
 
     class Meta:
@@ -157,12 +153,48 @@ class OrderItemSerializer(serializers.ModelSerializer):
         fields = ("id", "menu_item", "menu_item_name", "quantity", "unit_price")
 
 
+class PaymentSerializer(serializers.ModelSerializer):
+
+
+    order_id = serializers.ReadOnlyField(source="order.id")
+
+    class Meta:
+        model = Payment
+        fields = (
+            "id",
+            "order_id",
+            "amount",
+            "payment_method",
+            "status",
+            "transaction_id",
+            "created_at",
+        )
+        read_only_fields = (
+            "id",
+            "order_id",
+            "amount",
+            "payment_method",
+            "status",
+            "transaction_id",
+            "created_at",
+        )
+
+
+class OrderPaymentInputSerializer(serializers.Serializer):
+
+
+    payment_method = serializers.ChoiceField(
+        choices=Payment.Method.choices, default=Payment.Method.CARD
+    )
+
+
 class OrderSerializer(serializers.ModelSerializer):
- 
+
 
     customer_username = serializers.ReadOnlyField(source="customer.username")
     table_number = serializers.ReadOnlyField(source="table.table_number")
     items = OrderItemSerializer(many=True, read_only=True)
+    payment = PaymentSerializer(read_only=True)
     order_items = OrderItemInputSerializer(
         many=True, write_only=True, required=True
     )
@@ -178,14 +210,21 @@ class OrderSerializer(serializers.ModelSerializer):
             "status",
             "total_amount",
             "items",
+            "payment",
             "order_items",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "customer", "total_amount", "created_at", "updated_at")
+        read_only_fields = (
+            "id",
+            "customer",
+            "total_amount",
+            "created_at",
+            "updated_at",
+        )
 
     def validate_order_items(self, value):
-        
+    
         if not value:
             raise serializers.ValidationError("Order must contain at least one item.")
 
@@ -198,7 +237,7 @@ class OrderSerializer(serializers.ModelSerializer):
         return value
 
     def create(self, validated_data):
-        
+
         order_items_data = validated_data.pop("order_items")
 
         with transaction.atomic():
@@ -221,53 +260,8 @@ class OrderSerializer(serializers.ModelSerializer):
             order.total_amount = total
             order.save()
 
+            if order.table:
+                order.table.status = Table.Status.OCCUPIED
+                order.table.save()
+
         return order
-
-
-class PaymentSerializer(serializers.ModelSerializer):
-   
-
-    order_id = serializers.PrimaryKeyRelatedField(
-        queryset=Order.objects.all(), source="order"
-    )
-
-    class Meta:
-        model = Payment
-        fields = (
-            "id",
-            "order_id",
-            "amount",
-            "payment_method",
-            "status",
-            "transaction_id",
-            "created_at",
-        )
-        read_only_fields = ("id", "created_at")
-
-    def validate(self, attrs):
-        
-        order = attrs.get("order")
-        amount = attrs.get("amount")
-
-        if order.payment is not None if hasattr(order, "payment") else False:
-            raise serializers.ValidationError("This order is already paid.")
-
-        if amount != order.total_amount:
-            raise serializers.ValidationError(
-                {
-                    "amount": (
-                        f"Payment amount (${amount}) does not match order total "
-                        f"(${order.total_amount})."
-                    )
-                }
-            )
-        return attrs
-
-    def create(self, validated_data):
-        
-        with transaction.atomic():
-            payment = Payment.objects.create(**validated_data)
-            if payment.status == Payment.Status.COMPLETED:
-                payment.order.status = Order.Status.COMPLETED
-                payment.order.save()
-        return payment
