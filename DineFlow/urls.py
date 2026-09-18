@@ -1,13 +1,25 @@
 
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import include, path
+from django.views.generic import RedirectView
 from drf_spectacular.views import (
     SpectacularAPIView,
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
 
+
+def ping(request):
+    
+    return HttpResponse(
+        f"PONG! Django is working. request.path={request.path} | PATH_INFO={request.environ.get('PATH_INFO')}"
+    )
+
+
 urlpatterns = [
+    path("ping/", ping),
+    path("", RedirectView.as_view(url="/api/docs/", permanent=False)),
     path("admin/", admin.site.urls),
     path("api/auth/", include("accounts.urls")),
     path("api/restaurant/", include("restaurant.urls")),

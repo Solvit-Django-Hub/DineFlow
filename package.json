@@ -1,0 +1,7 @@
+{
+  "name": "dineflow",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "python3 manage.py collectstatic --noinput"
+  }
+}
