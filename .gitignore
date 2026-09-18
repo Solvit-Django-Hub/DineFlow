@@ -40,10 +40,8 @@ local_settings.py
 db.sqlite3
 db.sqlite3-journal
 media/
-staticfiles/
-collected_static/
 
-
+# Django Migrations
 */migrations/*.py
 !*/migrations/__init__.py
 
@@ -68,31 +66,8 @@ postman/
 *.sublime-workspace
 *.sublime-project
 
-# Testing & Coverage
-.tox/
-.nox/
-.coverage
-.coverage.*
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-htmlcov/
-
 # Operating System Files
 Thumbs.db
-Thumbs.db:encryptable
-ehthumbs.db
-ehthumbs_vista.db
-*.stackdump
 Desktop.ini
-[Dd]esktop.ini
-$RECYCLE.BIN/
 .DS_Store
-.AppleDouble
-.LSOverride
-._*
-.Spotlight-V100
-.Trashes
+.vercel

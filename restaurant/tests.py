@@ -13,13 +13,13 @@ class RestaurantAPITests(APITestCase):
     def setUp(self):
         self.staff_user = User.objects.create_user(
             username="staff_member",
-            email="staff@dineflow.com",
+            email="staff@DineFlow.com",
             password="Password123!",
             role=User.Role.STAFF,
         )
         self.customer_user = User.objects.create_user(
             username="customer_tester",
-            email="customer@dineflow.com",
+            email="customer@DineFlow.com",
             password="Password123!",
             role=User.Role.CUSTOMER,
         )
