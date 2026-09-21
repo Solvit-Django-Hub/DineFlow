@@ -1,29 +1,39 @@
-# DINEFLOW
+# DineFlow
 
 ### Restaurant Management System API
 
-DINEFLOW is a backend REST API built with **Django** and **Django REST Framework** for managing restaurant operations.
+DineFlow is a RESTful backend API built with **Django** and **Django REST Framework** for managing restaurant operations.
 
-It allows restaurants to manage users, menus, tables, reservations, orders, kitchen operations, and payments through a secure and organized API.
+It provides functionality for managing users, menus, dining tables, reservations, orders, kitchen operations, and payments through a secure and organized API.
 
 ---
 
-## Features
+##  Live API
+
+**API:**
+https://dineflow-api.vercel.app/
+
+**Swagger Documentation:**
+https://dineflow-api.vercel.app/api/docs/
+
+---
+
+##  Features
 
 * User registration and JWT authentication
 * Role-based access for Admin, Staff, and Customers
-* Restaurant menu and category management
+* Menu and category management
 * Dining table management
 * Table reservations
 * Order management
-* Kitchen order status tracking
+* Kitchen order tracking
 * Payment management
 * Search, filtering, ordering, and pagination
-* API documentation with Swagger
+* Swagger API documentation
 
 ---
 
-## Main User Flow
+##  Main User Flow
 
 ```text
 Register / Login
@@ -45,55 +55,76 @@ Order Completed
 
 ---
 
-## User Roles
+##  User Roles
 
-| Role     | Description                                                      |
-| -------- | ---------------------------------------------------------------- |
-| Customer | Browse the menu, reserve tables, place orders, and make payments |
-| Staff    | Manage menus, tables, reservations, and orders                   |
-| Admin    | Manage users and restaurant operations                           |
-
----
-
-## Technologies
-
-* Python
-* Django
-* Django REST Framework
-* Simple JWT
-* PostgreSQL / SQLite
-* django-filter
-* drf-spectacular
-* WhiteNoise
+| Role         | Description                                                   |
+| ------------ | ------------------------------------------------------------- |
+| **Customer** | Browse menus, reserve tables, place orders, and make payments |
+| **Staff**    | Manage menus, tables, reservations, and orders                |
+| **Admin**    | Manage users and restaurant operations                        |
 
 ---
 
-## Project Structure
+##  Tech Stack
+
+* **Python**
+* **Django**
+* **Django REST Framework**
+* **Simple JWT**
+* **PostgreSQL**
+* **Neon PostgreSQL**
+* **django-filter**
+* **drf-spectacular**
+* **WhiteNoise**
+* **Vercel**
+
+---
+
+##  Database
+
+DineFlow uses **PostgreSQL**, hosted on **Neon** for the production environment.
+
+The database stores and manages:
+
+* Users
+* Menu categories and items
+* Dining tables
+* Reservations
+* Orders and order items
+* Payments
+
+Database credentials are managed through environment variables and are not stored in the repository.
+
+---
+
+##  Project Structure
 
 ```text
-DINEFLOW/
+DineFlow/
 │
 ├── accounts/
 ├── restaurant/
 ├── config/
 ├── manage.py
 ├── requirements.txt
+├── vercel.json
 ├── .env
+├── .gitignore
 └── README.md
 ```
 
 ---
 
-## Installation
+##  Installation
 
-Clone the project:
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/Solvit-Django-Hub/DineFlow.git
 cd DineFlow
 ```
 
-Create a virtual environment:
+### 2. Create a Virtual Environment
 
 ```bash
 python -m venv .venv
@@ -105,101 +136,140 @@ Activate it on Windows:
 .\.venv\Scripts\Activate.ps1
 ```
 
-Install dependencies:
+### 3. Install Dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-Create a `.env` file and configure your environment variables:
+### 4. Configure Environment Variables
+
+Create a `.env` file in the project root:
 
 ```env
 DEBUG=True
 SECRET_KEY=your-secret-key
 ALLOWED_HOSTS=127.0.0.1,localhost
 CORS_ALLOW_ALL=True
+DATABASE_URL=your-neon-database-url
 ```
 
-Run migrations:
+> Never commit your `.env` file or database credentials to GitHub.
+
+### 5. Run Migrations
 
 ```bash
 python manage.py migrate
 ```
 
-Create an admin user:
+### 6. Create an Admin User
 
 ```bash
 python manage.py createsuperuser
 ```
 
-Start the server:
+### 7. Start the Server
 
 ```bash
 python manage.py runserver
 ```
 
+The API will be available at:
+
+```text
+http://127.0.0.1:8000/
+```
+
 ---
 
-## API Documentation
+##  API Documentation
 
-After starting the server, open Swagger:
+DineFlow uses **Swagger / OpenAPI** for interactive API documentation.
+
+### Local
 
 ```text
 http://127.0.0.1:8000/api/docs/
 ```
 
-Swagger provides an interactive interface for viewing and testing the API endpoints.
+### Live
+
+https://dineflow-api.vercel.app/api/docs/
+
+Swagger allows you to explore and test the available endpoints directly.
 
 ---
 
-## Testing
+## Authentication
 
-Run the tests with:
+DineFlow uses **JWT authentication**.
+
+After logging in, the API provides an access token and refresh token.
+
+Protected endpoints require:
+
+```http
+Authorization: Bearer <access_token>
+```
+
+---
+
+##  Testing
+
+Run the test suite with:
 
 ```bash
 python manage.py test
 ```
 
+You can also check the project configuration:
+
+```bash
+python manage.py check
+```
+
 ---
 
-## Deployment
+##  Deployment
 
-DINEFLOW can be deployed using **Vercel**.
+DineFlow is deployed on **Vercel** with **Neon PostgreSQL** as the production database.
 
-Install the Vercel CLI:
+To deploy using Vercel:
 
 ```bash
 npm install -g vercel
 ```
 
-Login:
-
 ```bash
 vercel login
 ```
-
-Deploy:
-
-```bash
-vercel
-```
-
-For production:
 
 ```bash
 vercel --prod
 ```
 
+Production environment variables should be configured in Vercel and not committed to the repository.
+
 ---
 
-## Purpose
+##  Links
 
-DINEFLOW was created as a practical Django REST Framework project to demonstrate:
+* **Repository:** https://github.com/Solvit-Django-Hub/DineFlow
+* **Live API:** https://dineflow-api.vercel.app/
+* **Swagger:** https://dineflow-api.vercel.app/api/docs/
 
-* Backend development with Django
-* REST API development
-* Authentication and permissions
-* Database relationships
-* Business logic and validation
-* API documentation
-* Testing and deployment
+---
+
+##  Author
+
+<a href="https://github.com/Aline-CROIRE">
+  <img src="https://github.com/Aline-CROIRE.png" width="100px;" alt="Aline-CROIRE"/>
+  <br />
+  <sub><b>Aline-CROIRE</b></sub>
+</a>
+
+<br />
+
+**DineFlow** — Restaurant Management System API
+
+Built with **Django, Django REST Framework & PostgreSQL**.
