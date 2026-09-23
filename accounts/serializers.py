@@ -117,26 +117,54 @@ class ResendVerificationSerializer(serializers.Serializer):
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     def validate(self, attrs):
-        data = super().validate(attrs)
+        username = attrs.get(self.username_field)
+        password = attrs.get("password")
 
-        if not self.user.is_email_verified and not self.user.is_superuser:
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            try:
+                user = User.objects.get(email=username)
+            except User.DoesNotExist:
+                raise serializers.ValidationError(
+                    {"username": "No account found with this username."}
+                )
+
+        if not user.check_password(password):
+            raise serializers.ValidationError(
+                {"password": "Incorrect password. Please try again."}
+            )
+
+        if not user.is_active:
+            raise serializers.ValidationError(
+                {"detail": "This account has been deactivated. Please contact administration."}
+            )
+
+        if not user.is_email_verified and not user.is_superuser:
             raise serializers.ValidationError(
                 {
                     "detail": "Please verify your email before logging in.",
                     "needs_verification": True,
-                    "email": self.user.email,
+                    "email": user.email,
                 }
             )
 
-        data["user"] = {
-            "id": self.user.id,
-            "username": self.user.username,
-            "email": self.user.email,
-            "first_name": self.user.first_name,
-            "last_name": self.user.last_name,
-            "phone_number": self.user.phone_number,
-            "role": self.user.role,
-            "is_email_verified": self.user.is_email_verified,
+        self.user = user
+        refresh = self.get_token(user)
+
+        data = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+            "user": {
+                "id": user.id,
+                "username": user.username,
+                "email": user.email,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "phone_number": user.phone_number,
+                "role": user.role,
+                "is_email_verified": user.is_email_verified,
+            },
         }
         return data
 
