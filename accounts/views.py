@@ -8,6 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView
 from .models import User
 from .permissions import IsAdminRole
 from .serializers import (
+    AdminUserSerializer,
     ChangePasswordSerializer,
     CustomTokenObtainPairSerializer,
     RegisterSerializer,
@@ -49,6 +50,9 @@ class VerifyEmailView(APIView):
                     "id": user.id,
                     "username": user.username,
                     "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "phone_number": user.phone_number,
                     "role": user.role,
                     "is_email_verified": user.is_email_verified,
                 },
@@ -114,12 +118,15 @@ class ChangePasswordView(APIView):
 
 @extend_schema_view(
     list=extend_schema(tags=["Authentication & Users"], summary="List users (Admin only)"),
+    create=extend_schema(tags=["Authentication & Users"], summary="Create user (Admin only)"),
     retrieve=extend_schema(tags=["Authentication & Users"], summary="Retrieve user details"),
-    partial_update=extend_schema(tags=["Authentication & Users"], summary="Update user role/status"),
+    update=extend_schema(tags=["Authentication & Users"], summary="Update user (Admin only)"),
+    partial_update=extend_schema(tags=["Authentication & Users"], summary="Partial update user"),
+    destroy=extend_schema(tags=["Authentication & Users"], summary="Delete user (Admin only)"),
 )
 class UserManagementViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserProfileSerializer
+    queryset = User.objects.all().order_by("-date_joined")
+    serializer_class = AdminUserSerializer
     permission_classes = [IsAuthenticated, IsAdminRole]
     filterset_fields = ["role", "is_active", "is_email_verified"]
-    search_fields = ["username", "email", "phone_number"]
+    search_fields = ["username", "email", "phone_number", "first_name", "last_name"]

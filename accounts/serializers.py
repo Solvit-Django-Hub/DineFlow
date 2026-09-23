@@ -116,21 +116,25 @@ class ResendVerificationSerializer(serializers.Serializer):
 
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
-    @classmethod
-    def get_token(cls, user):
-        token = super().get_token(user)
-        token["username"] = user.username
-        token["email"] = user.email
-        token["role"] = user.role
-        token["is_email_verified"] = user.is_email_verified
-        return token
-
     def validate(self, attrs):
         data = super().validate(attrs)
+
+        if not self.user.is_email_verified and not self.user.is_superuser:
+            raise serializers.ValidationError(
+                {
+                    "detail": "Please verify your email before logging in.",
+                    "needs_verification": True,
+                    "email": self.user.email,
+                }
+            )
+
         data["user"] = {
             "id": self.user.id,
             "username": self.user.username,
             "email": self.user.email,
+            "first_name": self.user.first_name,
+            "last_name": self.user.last_name,
+            "phone_number": self.user.phone_number,
             "role": self.user.role,
             "is_email_verified": self.user.is_email_verified,
         }
@@ -152,6 +156,46 @@ class UserProfileSerializer(serializers.ModelSerializer):
             "date_joined",
         )
         read_only_fields = ("id", "role", "is_email_verified", "date_joined")
+
+
+class AdminUserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True, required=False)
+
+    class Meta:
+        model = User
+        fields = (
+            "id",
+            "username",
+            "email",
+            "password",
+            "first_name",
+            "last_name",
+            "phone_number",
+            "role",
+            "is_active",
+            "is_email_verified",
+            "date_joined",
+        )
+        read_only_fields = ("id", "date_joined")
+
+    def create(self, validated_data):
+        password = validated_data.pop("password", None)
+        user = User.objects.create(**validated_data)
+        if password:
+            user.set_password(password)
+        else:
+            user.set_unusable_password()
+        user.save()
+        return user
+
+    def update(self, instance, validated_data):
+        password = validated_data.pop("password", None)
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        if password:
+            instance.set_password(password)
+        instance.save()
+        return instance
 
 
 class ChangePasswordSerializer(serializers.Serializer):
