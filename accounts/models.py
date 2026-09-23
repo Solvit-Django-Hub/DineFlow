@@ -15,6 +15,9 @@ class User(AbstractUser):
         default=Role.CUSTOMER,
     )
     phone_number = models.CharField(max_length=20, blank=True, null=True)
+    is_email_verified = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True, null=True)
+    verification_code_expires_at = models.DateTimeField(blank=True, null=True)
 
     REQUIRED_FIELDS = ["email"]
 

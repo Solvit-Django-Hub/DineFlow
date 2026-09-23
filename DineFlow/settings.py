@@ -1,5 +1,3 @@
-
-
 from datetime import timedelta
 from pathlib import Path
 import environ
@@ -17,7 +15,7 @@ SECRET_KEY = env(
     "SECRET_KEY",
     default="django-insecure-DineFlow-production-key-change-in-environment",
 )
-DEBUG = env.bool("DEBUG", default=False)
+DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
@@ -37,7 +35,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    "DineFlow.middleware.VercelPathMiddleware",  
+    "DineFlow.middleware.VercelPathMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -111,9 +109,9 @@ REST_FRAMEWORK = {
 }
 
 SPECTACULAR_SETTINGS = {
-    "TITLE": "DineFlow Restaurant Management API",
+    "TITLE": "DINEFLOW Restaurant Management API",
     "DESCRIPTION": (
-        "Production-grade RESTful API for DineFlow restaurant management system. "
+        "Production-grade RESTful API for DINEFLOW restaurant management system. "
         "Supports JWT Authentication, Table Reservations, Kitchen Order Processing, and Billing."
     ),
     "VERSION": "1.0.0",
@@ -156,3 +154,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOW_ALL_ORIGINS = True
 
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
+EMAIL_BACKEND = env("EMAIL_BACKEND", default="django.core.mail.backends.smtp.EmailBackend")
+EMAIL_HOST = env("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = env.int("EMAIL_PORT", default=587)
+EMAIL_USE_TLS = env.bool("EMAIL_USE_TLS", default=True)
+EMAIL_HOST_USER = env("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = env("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", default=env("EMAIL_HOST_USER", default="no-reply@dineflow.com"))
